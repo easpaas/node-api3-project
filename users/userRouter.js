@@ -27,7 +27,6 @@ router.get('/', (req, res) => {
 // Return user from valid id parameter
 router.get('/:id', (req, res) => {
   const userId = req.params.id;
-
   db.getById(userId)
     .then(user => {
       console.log(user);
@@ -42,7 +41,6 @@ router.get('/:id', (req, res) => {
 // Return all posts of user from valid id parameter
 router.get('/:id/posts', (req, res) => {
   const userId = req.params.id;
-
   db.getUserPosts(userId)
     .then(posts => {
       res.status(200).json(posts);
@@ -53,8 +51,17 @@ router.get('/:id/posts', (req, res) => {
     })
 });
 
+// Delete user from valid id parameter
 router.delete('/:id', (req, res) => {
-  // do your magic!
+  const userId = req.params.id;
+  db.remove(userId)
+    .then(success => {
+      res.status(200).json({ message: 'User has been deleted'});
+    })
+    .catch(error => {
+      console.log(error)
+      res.status(500).json({ errorMessage: 'Could not connect to server' });
+    });
 });
 
 router.put('/:id', (req, res) => {
