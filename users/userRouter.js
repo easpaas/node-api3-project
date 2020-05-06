@@ -16,6 +16,7 @@ router.post('/', (req, res) => {
     });
   });
 
+// Return post for user from valid id parameter
 router.post('/:id/posts', (req, res) => {
   const post = { ...req.body, user_id: req.params.id };
   postDB.insert(post)
@@ -80,8 +81,17 @@ router.delete('/:id', (req, res) => {
     });
 });
 
+// Return success after user is updated with db
 router.put('/:id', (req, res) => {
-  // do your magic!
+  userDB.update(req.params.id, req.body) 
+    .then(success => {
+      console.log(success);
+      res.status(201).json(success);
+    })
+    .catch(error => {
+      console.log(error);
+      res.status(500).json({ errorMessage: 'Error connecting to server.' });
+    });
 });
 
 //custom middleware
