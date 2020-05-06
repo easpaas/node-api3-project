@@ -1,9 +1,11 @@
 const express = require('express');
+const db = require('./userDb.js');
 
 const router = express.Router();
 
+
 router.post('/', (req, res) => {
-  // do your magic!
+  // do something!
 });
 
 router.post('/:id/posts', (req, res) => {
@@ -11,7 +13,14 @@ router.post('/:id/posts', (req, res) => {
 });
 
 router.get('/', (req, res) => {
-  // do your magic!
+  db.get()
+    .then(users => {
+      res.status(200).json(users)
+    })
+    .catch(error => {
+      console.log(error)
+      res.status(500).json({ errorMessage: 'Error connecting to server'});
+    });
 });
 
 router.get('/:id', (req, res) => {
