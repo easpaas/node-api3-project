@@ -24,7 +24,15 @@ router.get('/', (req, res) => {
 });
 
 router.get('/:id', (req, res) => {
-  // do your magic!
+  db.getById(req.params.id)
+    .then(user => {
+      console.log(user);
+      res.status(200).json(user);
+    })
+    .catch(error => {
+      console.log(error);
+      res.status(500).json({ errorMessage: 'Error connecting to server' })
+    })
 });
 
 router.get('/:id/posts', (req, res) => {
