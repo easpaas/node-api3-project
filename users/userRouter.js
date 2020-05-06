@@ -12,6 +12,7 @@ router.post('/:id/posts', (req, res) => {
   // do your magic!
 });
 
+// Return all users from db
 router.get('/', (req, res) => {
   db.get()
     .then(users => {
@@ -23,8 +24,11 @@ router.get('/', (req, res) => {
     });
 });
 
+// Return user from valid id parameter
 router.get('/:id', (req, res) => {
-  db.getById(req.params.id)
+  const userId = req.params.id;
+
+  db.getById(userId)
     .then(user => {
       console.log(user);
       res.status(200).json(user);
@@ -35,8 +39,18 @@ router.get('/:id', (req, res) => {
     })
 });
 
+// Return all posts of user from valid id parameter
 router.get('/:id/posts', (req, res) => {
-  // do your magic!
+  const userId = req.params.id;
+
+  db.getUserPosts(userId)
+    .then(posts => {
+      res.status(200).json(posts);
+    })
+    .catch(error => {
+      console.log(error);
+      res.status(500).json({ errorMessage: 'Error connecting to server' })
+    })
 });
 
 router.delete('/:id', (req, res) => {
