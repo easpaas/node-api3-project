@@ -3,10 +3,18 @@ const db = require('./userDb.js');
 
 const router = express.Router();
 
-
+// Return user added to db successfully
 router.post('/', (req, res) => {
-  // do something!
-});
+  const user = req.body;
+  db.insert(user)
+    .then(user => {
+      res.status(200).json(user);
+    })
+    .catch(error => {
+      console.log(error)
+      res.status(500).json({ errorMessage: 'Could not connect to server.' })
+    });
+  });
 
 router.post('/:id/posts', (req, res) => {
   // do your magic!
