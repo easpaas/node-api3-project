@@ -4,6 +4,7 @@ import './App.css';
 
 function App() {
   const [users, setUsers] = useState([]);
+  const [userPosts, setUserPosts] = useState([]);
 
   useEffect(() => {
     axios.get('http://localhost:4000/api/users')
@@ -16,6 +17,12 @@ function App() {
       })
   }, []);
 
+  const fetchDetails = (e) => {
+    const id = e;
+    console.log(id)
+    // axios.get('http://localhost:4000/api/users/')
+  }
+
   return (
     <div className="App">
       <h1>Posts from Lord of The Rings Characters</h1>
@@ -26,6 +33,7 @@ function App() {
               <div key={user.id} className="post">
                 <h2>{`User: ${user.name}`}</h2>
                 <p>{`User Identification: ${user.id}`}</p>
+                <button onClick={(e) => fetchDetails(e)}>User Details</button>
               </div>
             )
           })
