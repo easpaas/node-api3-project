@@ -17,7 +17,7 @@ router.post('/', validateUser, (req, res) => {
   });
 
 // Return post for user from valid id parameter
-router.post('/:id/posts', validateUserId, (req, res) => {
+router.post('/:id/posts', validateUserId, validatePost, (req, res) => {
   const post = { ...req.body, user_id: req.params.id };
   postDB.insert(post)
     .then(post => {
@@ -25,7 +25,7 @@ router.post('/:id/posts', validateUserId, (req, res) => {
     })
     .catch(error => {
       console.log(error)
-      res.status(500).json({ errorMessage: 'Error connecting to server.' });
+      res.status(500).json({ errorMessage: `Error retrieving posts from user with id ${user_id}` });
     });
 });
 
@@ -37,7 +37,7 @@ router.get('/', (req, res) => {
     })
     .catch(error => {
       console.log(error)
-      res.status(500).json({ errorMessage: 'Error connecting to server'});
+      res.status(500).json({ errorMessage: `Error retrieving lists of users`});
     });
 });
 
@@ -64,7 +64,7 @@ router.get('/:id/posts', validateUserId, (req, res) => {
     })
     .catch(error => {
       console.log(error);
-      res.status(500).json({ errorMessage: 'Error connecting to server' })
+      res.status(500).json({ errorMessage: `Error retrieving posts for user with id ${userId}` })
     })
 });
 
@@ -77,7 +77,7 @@ router.delete('/:id', validateUserId, (req, res) => {
     })
     .catch(error => {
       console.log(error)
-      res.status(500).json({ errorMessage: 'Could not connect to server' });
+      res.status(500).json({ errorMessage: `Error deleting user with id ${userid}` });
     });
 });
 
@@ -90,7 +90,7 @@ router.put('/:id', validateUserId, (req, res) => {
     })
     .catch(error => {
       console.log(error);
-      res.status(500).json({ errorMessage: 'Error connecting to server.' });
+      res.status(500).json({ errorMessage: `Error updating user with id ${req.params.id}.` });
     });
 });
 
@@ -101,13 +101,8 @@ function validateUserId(req, res, next) {
   const userId = req.params.id;
   userDB.getById(userId)
     .then(success => {
-      res.status(201).json(success)
+      next();
     })
-    .catch(error => {
-      res.status(404).json({ errorMessage: `Could not find user with id ${userId}` });
-    });
-  
-  next();
 }
 
 function validateUser(req, res, next) {
@@ -122,7 +117,11 @@ function validateUser(req, res, next) {
 }
 
 function validatePost(req, res, next) {
-  // do your magic!
+  if (!req.body) {
+    res.status(400).json({ message: 'Missing required text field.' })
+  } else{
+    next();
+  }
 }
 
 module.exports = router;
